@@ -1,9 +1,10 @@
-import requests, time
+import requests
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.background import BackgroundTasks
 from redis_om import get_redis_connection, HashModel
 from starlette.requests import Request
+from config import ConsumerConfig
 
 # RUN: uvicorn main:app --reload --port=8001
 
@@ -16,13 +17,11 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# In reality this should be a different database,
-# since each microservice should have its own database.
-# Read these from config file eventually.
+# Ensure each microservice has its own database.
 redis = get_redis_connection(
-    host="redis-14148.c300.eu-central-1-1.ec2.cloud.redislabs.com",
-    port="14148",
-    password="6sIkabUNkuRt9lwqzCLX0Uidfx7vlW4R",
+    host=ConsumerConfig.HOST,
+    port=ConsumerConfig.PORT,
+    password=ConsumerConfig.PASSWORD,
     decode_responses=True
 )
 
